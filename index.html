@@ -69,6 +69,7 @@
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
+[hidden]{ display:none !important; }
 html{ -webkit-text-size-adjust:100%; }
 body{
   margin:0;
@@ -336,39 +337,6 @@ section{ position:relative; }
 .guests-field{ transition:opacity .25s ease; }
 .guests-field.is-disabled{ opacity:0.4; pointer-events:none; }
 
-/* ---------- Buscador de invitados ---------- */
-.search-results{
-  list-style:none;
-  margin:0; padding:0;
-  border:1.3px solid var(--hairline);
-  background:var(--ivory);
-  max-height:220px;
-  overflow-y:auto;
-}
-.search-results li + li{ border-top:1px solid var(--hairline-soft); }
-.search-results button{
-  display:block;
-  width:100%;
-  text-align:left;
-  background:none;
-  border:none;
-  padding:12px 14px;
-  font-family:var(--f-label);
-  font-weight:700;
-  font-size:1.02rem;
-  color:var(--coffee-deep);
-  cursor:pointer;
-}
-.search-results button:hover, .search-results button:focus-visible{
-  background:var(--ivory-deep);
-  color:var(--bronze-deep);
-}
-.search-empty{
-  margin:0;
-  font-family:var(--f-label); font-weight:600; font-size:0.92rem;
-  color:var(--coffee-soft); line-height:1.5;
-}
-
 .selected-guest{
   display:flex;
   align-items:center;
@@ -391,20 +359,53 @@ section{ position:relative; }
   font-family:var(--f-label); font-weight:600;
   font-size:0.92rem; color:var(--coffee-soft);
 }
-.link-change{
-  flex:none;
-  background:none;
-  border:none;
-  padding:6px 2px;
-  font-family:var(--f-label); font-weight:700;
-  font-size:0.9rem; letter-spacing:0.03em;
-  color:var(--bronze-deep);
-  text-decoration:underline;
-  cursor:pointer;
-}
-
 .rsvp-fields{
   display:flex; flex-direction:column; gap:16px;
+}
+
+.guest-locked, .guest-missing{
+  display:flex; flex-direction:column; gap:14px;
+  align-items:flex-start;
+  border:1.5px solid var(--hairline);
+  background:var(--ivory);
+  padding:18px;
+}
+.guest-locked-text{
+  margin:0;
+  font-family:var(--f-label); font-weight:600; font-size:0.98rem;
+  color:var(--coffee-soft); line-height:1.5;
+}
+
+.guest-success{
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  text-align:center;
+  border:1.5px solid var(--sage-deep);
+  background:var(--ivory);
+  padding:30px 22px 24px;
+}
+.guest-success-icon{
+  display:flex; align-items:center; justify-content:center;
+  width:48px; height:48px;
+  border-radius:50%;
+  background:var(--sage-deep);
+  color:var(--ivory-warm);
+}
+.guest-success-icon svg{ width:24px; height:24px; }
+.guest-success-title{
+  margin:4px 0 0;
+  font-family:var(--f-display); font-weight:800;
+  font-size:1.3rem; color:var(--coffee-deep);
+}
+.guest-success-text{
+  margin:0;
+  font-family:var(--f-label); font-weight:600; font-size:0.98rem;
+  color:var(--coffee-soft); line-height:1.5;
+}
+.link-quiet{
+  margin-top:8px;
+  font-family:var(--f-label); font-weight:700; font-size:0.88rem;
+  color:var(--bronze-deep);
+  text-decoration:underline;
 }
 
 .btn-submit{
@@ -536,15 +537,16 @@ section{ position:relative; }
 
   <section class="rsvp reveal">
     <p class="section-label">Confirma tu asistencia</p>
-    <p class="rsvp-note">Busca tu invitación por nombre para ver tus cupos asignados y confirmar por WhatsApp.</p>
+    <p class="rsvp-note" id="rsvpNote">Cargando tu invitación…</p>
 
     <form class="rsvp-form" id="rsvpForm" novalidate>
 
-      <div class="field" id="searchStep">
-        <label for="rsvpSearch">Escribe tu nombre o el de tu familia</label>
-        <input type="text" id="rsvpSearch" autocomplete="off" placeholder="Ej: Carrascal, Familia Arias…">
-        <ul class="search-results" id="searchResults" hidden></ul>
-        <p class="search-empty" id="searchEmpty" hidden>No encontramos esa invitación. Verifica cómo está escrita o escríbenos por WhatsApp.</p>
+      <div class="guest-missing" id="guestMissing" hidden>
+        <p class="guest-locked-text">No encontramos tu invitación con este link. Verifica que sea el link exacto que te compartimos, o escríbenos por WhatsApp.</p>
+        <a class="btn-map" href="https://wa.me/573106060837" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.1-.3.2-.6.1a6.6 6.6 0 0 1-2-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5.2-.4a.5.5 0 0 0 0-.4c-.1-.1-.7-1.6-.9-2.2s-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 6 6 0 0 0 1.3 3.1 13 13 0 0 0 5 4.4c.7.3 1.2.5 1.7.6a4 4 0 0 0 1.8.1 3 3 0 0 0 2-1.4 2.4 2.4 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+          Escribir por WhatsApp
+        </a>
       </div>
 
       <div class="selected-guest" id="selectedGuest" hidden>
@@ -553,7 +555,23 @@ section{ position:relative; }
           <span class="selected-guest-name" id="selectedGuestName"></span>
           <span class="selected-guest-cupos" id="selectedGuestCupos"></span>
         </div>
-        <button type="button" class="link-change" id="changeGuest">Cambiar</button>
+      </div>
+
+      <div class="guest-locked" id="guestLocked" hidden>
+        <p class="guest-locked-text">Esta invitación ya confirmó su asistencia. Si necesitas cambiar algo, escríbenos por WhatsApp y con gusto lo ajustamos.</p>
+        <a class="btn-map" id="lockedWhatsapp" href="https://wa.me/573106060837" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.1-.3.2-.6.1a6.6 6.6 0 0 1-2-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5.2-.4a.5.5 0 0 0 0-.4c-.1-.1-.7-1.6-.9-2.2s-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 6 6 0 0 0 1.3 3.1 13 13 0 0 0 5 4.4c.7.3 1.2.5 1.7.6a4 4 0 0 0 1.8.1 3 3 0 0 0 2-1.4 2.4 2.4 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+          Escribir por WhatsApp
+        </a>
+      </div>
+
+      <div class="guest-success" id="guestSuccess" hidden>
+        <span class="guest-success-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <p class="guest-success-title" id="guestSuccessTitle"></p>
+        <p class="guest-success-text" id="guestSuccessText"></p>
+        <a class="link-quiet" href="https://wa.me/573106060837" target="_blank" rel="noopener noreferrer">¿Necesitas cambiar tu respuesta? Escríbenos por WhatsApp</a>
       </div>
 
       <div class="rsvp-fields" id="rsvpFields" hidden>
@@ -581,8 +599,8 @@ section{ position:relative; }
         </div>
 
         <button type="submit" class="btn-submit">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.1-.3.2-.6.1a6.6 6.6 0 0 1-2-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5.2-.4a.5.5 0 0 0 0-.4c-.1-.1-.7-1.6-.9-2.2s-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 6 6 0 0 0 1.3 3.1 13 13 0 0 0 5 4.4c.7.3 1.2.5 1.7.6a4 4 0 0 0 1.8.1 3 3 0 0 0 2-1.4 2.4 2.4 0 0 0 .2-1.4c-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
-          Enviar confirmación por WhatsApp
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Confirmar asistencia
         </button>
         <p class="form-status" id="formStatus" role="status"></p>
       </div>
@@ -620,20 +638,17 @@ section{ position:relative; }
     reveals.forEach(function(el){ el.classList.add('is-visible'); });
   }
 
-  var GUESTS = [{"nombre": "Familia Arias Acosta", "cupos": 4}, {"nombre": "Familia Sanchez Palacio", "cupos": 5}, {"nombre": "Raymond Sanguino y Sra.", "cupos": 2}, {"nombre": "Paula Aguire y Sr.", "cupos": 2}, {"nombre": "Yener Quintana y Sra.", "cupos": 2}, {"nombre": "Familia Ovalle Rodriguez", "cupos": 2}, {"nombre": "Familia Arias Reyes", "cupos": 2}, {"nombre": "Karen Duarte y Sr.", "cupos": 2}, {"nombre": "Familia Torres Quintero", "cupos": 2}, {"nombre": "Alexander Angarita y Sr.", "cupos": 2}, {"nombre": "Familia Navarro Jacome", "cupos": 2}, {"nombre": "Familia Vergel Carrascal", "cupos": 2}, {"nombre": "Familia Navarro Marquez", "cupos": 2}, {"nombre": "Familia Castro Pérez", "cupos": 2}, {"nombre": "Edward Gamez y Sra.", "cupos": 2}, {"nombre": "Martina Soto", "cupos": 1}, {"nombre": "Familia Angarita Pinzón", "cupos": 3}, {"nombre": "Danna Angarita y Sr.", "cupos": 2}, {"nombre": "Karol Angarita y Sr.", "cupos": 2}, {"nombre": "Maritza Pinzón y Familia", "cupos": 3}, {"nombre": "Familia Pinzón Pareja", "cupos": 3}, {"nombre": "Edilia Rosa y Familia", "cupos": 2}, {"nombre": "Aura Carrascal y Familia", "cupos": 2}, {"nombre": "Familia Carrascal Angarita", "cupos": 3}, {"nombre": "Janeth Carrascal y Familia", "cupos": 4}, {"nombre": "Dobany Carrascal y Familia", "cupos": 3}, {"nombre": "Mary Carrascal y Familia", "cupos": 2}, {"nombre": "Santiago Jacome", "cupos": 1}, {"nombre": "Alexander Vergel", "cupos": 2}, {"nombre": "Juan Carrascal", "cupos": 1}];
+  var API_URL = 'https://script.google.com/macros/s/AKfycbw3UXGup8K2IQhH4vQk7d2sAIOovUJdq2ru46QOm-76gVtCvOIduaB0cxLVkbtQC17jXQ/exec';
 
-  function normalize(s){
-    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-  }
-
-  var searchInput = document.getElementById('rsvpSearch');
-  var searchResults = document.getElementById('searchResults');
-  var searchEmpty = document.getElementById('searchEmpty');
-  var searchStep = document.getElementById('searchStep');
+  var rsvpNote = document.getElementById('rsvpNote');
+  var guestMissing = document.getElementById('guestMissing');
   var selectedGuestBox = document.getElementById('selectedGuest');
   var selectedGuestName = document.getElementById('selectedGuestName');
   var selectedGuestCupos = document.getElementById('selectedGuestCupos');
-  var changeGuestBtn = document.getElementById('changeGuest');
+  var guestLocked = document.getElementById('guestLocked');
+  var guestSuccess = document.getElementById('guestSuccess');
+  var guestSuccessTitle = document.getElementById('guestSuccessTitle');
+  var guestSuccessText = document.getElementById('guestSuccessText');
   var rsvpFields = document.getElementById('rsvpFields');
   var guestsSelect = document.getElementById('rsvpGuests');
   var attend = document.getElementById('rsvpAttend');
@@ -641,73 +656,50 @@ section{ position:relative; }
   var form = document.getElementById('rsvpForm');
   var status = document.getElementById('formStatus');
 
-  var selectedGuest = null;
+  var codigo = new URLSearchParams(location.search).get('inv') || '';
+  var currentGuest = null;
 
-  function renderResults(query){
-    var q = normalize(query);
-    searchResults.innerHTML = '';
-    if (q.length < 2){
-      searchResults.hidden = true;
-      searchEmpty.hidden = true;
-      return;
-    }
-    var matches = GUESTS.filter(function(g){
-      return normalize(g.nombre).indexOf(q) !== -1;
-    }).slice(0, 6);
-
-    if (matches.length === 0){
-      searchResults.hidden = true;
-      searchEmpty.hidden = false;
-      return;
-    }
-    searchEmpty.hidden = true;
-    matches.forEach(function(g){
-      var li = document.createElement('li');
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = g.nombre;
-      btn.addEventListener('click', function(){ selectGuest(g); });
-      li.appendChild(btn);
-      searchResults.appendChild(li);
-    });
-    searchResults.hidden = false;
+  function showMissing(text){
+    rsvpNote.textContent = 'Cada invitación tiene su propio link personal.';
+    guestMissing.hidden = false;
+    guestMissing.querySelector('.guest-locked-text').textContent = text;
   }
 
-  searchInput.addEventListener('input', function(){
-    renderResults(searchInput.value);
-  });
+  if (!codigo){
+    showMissing('Este link no incluye tu invitación personal. Usa el link exacto que te compartimos, o escríbenos por WhatsApp.');
+  } else {
+    fetch(API_URL + '?action=check&codigo=' + encodeURIComponent(codigo), { cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.ok){
+          showMissing('No encontramos tu invitación con este link. Verifica que sea el link exacto que te compartimos, o escríbenos por WhatsApp.');
+          return;
+        }
+        currentGuest = { nombre: data.nombre, cupos: data.cupos };
+        rsvpNote.textContent = '¡Hola, ' + data.nombre + '! Confirma tu asistencia aquí mismo.';
+        selectedGuestBox.hidden = false;
+        selectedGuestName.textContent = data.nombre;
+        selectedGuestCupos.textContent = 'Cupos asignados: ' + data.cupos;
 
-  function selectGuest(g){
-    selectedGuest = g;
-    selectedGuestName.textContent = g.nombre;
-    selectedGuestCupos.textContent = 'Cupos asignados: ' + g.cupos;
+        if (data.confirmado){
+          guestLocked.hidden = false;
+          return;
+        }
 
-    guestsSelect.innerHTML = '';
-    for (var i = 1; i <= g.cupos; i++){
-      var opt = document.createElement('option');
-      opt.value = String(i);
-      opt.textContent = i + (i === 1 ? ' persona' : ' personas');
-      if (i === g.cupos) opt.selected = true;
-      guestsSelect.appendChild(opt);
-    }
-
-    searchStep.hidden = true;
-    selectedGuestBox.hidden = false;
-    rsvpFields.hidden = false;
-    status.textContent = '';
-    document.getElementById('rsvpName').focus();
+        guestsSelect.innerHTML = '';
+        for (var i = 1; i <= data.cupos; i++){
+          var opt = document.createElement('option');
+          opt.value = String(i);
+          opt.textContent = i + (i === 1 ? ' persona' : ' personas');
+          if (i === data.cupos) opt.selected = true;
+          guestsSelect.appendChild(opt);
+        }
+        rsvpFields.hidden = false;
+      })
+      .catch(function(){
+        showMissing('No pudimos consultar tu invitación. Revisa tu conexión e intenta de nuevo, o escríbenos por WhatsApp.');
+      });
   }
-
-  changeGuestBtn.addEventListener('click', function(){
-    selectedGuest = null;
-    selectedGuestBox.hidden = true;
-    rsvpFields.hidden = true;
-    searchStep.hidden = false;
-    searchInput.value = '';
-    searchInput.focus();
-    searchResults.hidden = true;
-    searchEmpty.hidden = true;
-  });
 
   function syncGuests(){
     var disabled = attend.value === 'No podré asistir';
@@ -719,9 +711,7 @@ section{ position:relative; }
 
   form.addEventListener('submit', function(e){
     e.preventDefault();
-    if (!selectedGuest){
-      status.textContent = 'Primero busca y selecciona tu invitación.';
-      searchInput.focus();
+    if (!currentGuest){
       return;
     }
     var nombre = document.getElementById('rsvpName').value.trim();
@@ -734,21 +724,51 @@ section{ position:relative; }
     var guests = guestsSelect.value || '1';
     var msg = document.getElementById('rsvpMsg').value.trim();
 
-    var lines = [
-      'Hola! Soy ' + nombre + ', de la invitación de ' + selectedGuest.nombre + '.',
-      'Confirmo asistencia a la Renovación de Votos de Haiber & Maria Francia el sábado 15 de agosto.',
-      'Asistencia: ' + asistencia + '.'
-    ];
-    if (asistencia === 'Sí, asistiré'){
-      lines.push('Usaremos ' + guests + ' de ' + selectedGuest.cupos + ' cupos asignados.');
-    }
-    if (msg){
-      lines.push('Mensaje: ' + msg);
-    }
-    var text = encodeURIComponent(lines.join(' '));
-    var url = 'https://wa.me/573106060837?text=' + text;
-    status.textContent = 'Abriendo WhatsApp…';
-    window.open(url, '_blank', 'noopener');
+    var submitBtn = form.querySelector('.btn-submit');
+    submitBtn.disabled = true;
+    status.textContent = 'Enviando confirmación…';
+
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        codigo: codigo,
+        nombreConfirma: nombre,
+        asistencia: asistencia,
+        cuposUsados: asistencia === 'Sí, asistiré' ? guests : 0,
+        mensaje: msg
+      })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        submitBtn.disabled = false;
+        if (!data.ok){
+          if (data.error === 'already_confirmed'){
+            rsvpFields.hidden = true;
+            guestLocked.hidden = false;
+            status.textContent = '';
+          } else {
+            status.textContent = 'No pudimos registrar tu confirmación. Intenta de nuevo.';
+          }
+          return;
+        }
+
+        rsvpFields.hidden = true;
+        status.textContent = '';
+
+        if (asistencia === 'Sí, asistiré'){
+          guestSuccessTitle.textContent = '¡Gracias, ' + nombre + '!';
+          guestSuccessText.textContent = 'Tu confirmación quedó registrada: ' + guests + ' de ' + currentGuest.cupos + ' cupos. ¡Nos vemos el 15 de agosto!';
+        } else {
+          guestSuccessTitle.textContent = 'Gracias por avisarnos, ' + nombre;
+          guestSuccessText.textContent = 'Quedó registrado que no podrás acompañarnos. ¡Te vamos a extrañar!';
+        }
+        guestSuccess.hidden = false;
+      })
+      .catch(function(){
+        submitBtn.disabled = false;
+        status.textContent = 'No pudimos conectar para registrar tu confirmación. Revisa tu conexión e intenta de nuevo.';
+      });
   });
 })();
 </script>
